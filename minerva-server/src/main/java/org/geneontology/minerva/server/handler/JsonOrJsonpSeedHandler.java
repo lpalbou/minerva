@@ -56,6 +56,7 @@ public class JsonOrJsonpSeedHandler extends ModelCreator implements M3SeedHandle
 		this.golrUrl = golr;
 		this.ecoMapper = ecoMapper;
 		factory = new ExpressionMaterializingReasonerFactory(new ElkReasonerFactory());
+		System.out.println("JsonOrJsonpSeedHandler instanciated with " + defaultModelState + ", " + golr + ", " + ecoMapper);
 	}
 
 	@Override
@@ -94,7 +95,9 @@ public class JsonOrJsonpSeedHandler extends ModelCreator implements M3SeedHandle
 	}
 	
 	private SeedResponse fromProcess(String uid, Set<String> providerGroups, String intention, String packetId, String requestString) {
+		System.out.println("JsonOrJsonpSeedHandler::fromProcess(" + uid + ", " + providerGroups + ", " + intention + ", " + packetId + ", " + requestString);
 		SeedResponse response = new SeedResponse(uid, providerGroups, intention, packetId);
+		System.out.println("JsonOrJsonpSeedHandler::fromProcess: response = " + response);
 		ModelContainer model = null;
 		try {
 			requestString = StringUtils.trimToNull(requestString);
@@ -106,6 +109,8 @@ public class JsonOrJsonpSeedHandler extends ModelCreator implements M3SeedHandle
 			}
 			uid = normalizeUserId(uid);
 			UndoMetadata token = new UndoMetadata(uid);
+			System.out.println("JsonOrJsonpSeedHandler::fromProcess: uid: " + uid);
+			System.out.println("JsonOrJsonpSeedHandler::fromProcess: token: " + token);
 			model = createModel(uid, providerGroups, token, VariableResolver.EMPTY, null);
 			return seedFromProcess(uid, providerGroups, request[0].arguments, model, response, token);
 		} catch (Exception e) {
@@ -119,6 +124,8 @@ public class JsonOrJsonpSeedHandler extends ModelCreator implements M3SeedHandle
 	}
 	
 	private SeedResponse seedFromProcess(String uid, Set<String> providerGroups, SeedRequestArgument request, ModelContainer model, SeedResponse response, UndoMetadata token) throws Exception {
+		System.out.println("JsonOrJsonpSeedHandler::seedFromProcess(" + uid + ", " + providerGroups + ", " + request + ", " + model + ", " + response + ", " + token);
+
 		// check required fields
 		requireNotNull(request.process, "A process id is required for seeding");
 		requireNotNull(request.taxon, "A taxon id is required for seeding");
@@ -151,7 +158,9 @@ public class JsonOrJsonpSeedHandler extends ModelCreator implements M3SeedHandle
 					
 					};
 			Set<OWLAnnotation> defaultAnnotations = new HashSet<OWLAnnotation>();
+			System.out.println("JsonOrJsonpSeedHandler::seedFromProcess: calling addGeneratedAnnotations");
 			addGeneratedAnnotations(uid, providerGroups, defaultAnnotations, model.getOWLDataFactory());
+			System.out.println("JsonOrJsonpSeedHandler::seedFromProcess: calling addDateAnnotation");
 			addDateAnnotation(defaultAnnotations, model.getOWLDataFactory());
 			ModelSeeding<UndoMetadata> seeder = new ModelSeeding<UndoMetadata>(reasoner, provider, defaultAnnotations, curieHandler, ecoMapper);
 

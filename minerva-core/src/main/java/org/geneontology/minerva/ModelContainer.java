@@ -39,6 +39,7 @@ public class ModelContainer {
 		tboxOntology = tbox;
 		this.modelId = modelId;
 		init();
+		System.out.println("ModelContainer instanciated with " + modelId + " and tbox " + tbox);
 	}
 
 	/**
@@ -58,6 +59,7 @@ public class ModelContainer {
 		aboxOntology = abox;
 		this.modelId = modelId;
 		init();
+		System.out.println("ModelContainer instanciated with " + modelId + " and tbox " + tbox + " and abox " + abox);
 	}
 
 	/**
@@ -145,6 +147,11 @@ public class ModelContainer {
 	}
 	
 	public List<OWLOntologyChange> applyChanges(List<? extends OWLOntologyChange> changes) {
+		System.out.println("ModelContainer::applyChanges(" + changes + ")");
+		for(OWLOntologyChange change : changes) {
+			System.out.println("ModelContainer::applyChanges : " + change);
+		}
+		
 		ChangeApplied applied = getOWLOntologyManager().applyChanges(changes);
 		if (applied == ChangeApplied.SUCCESSFULLY) {
 			List<OWLOntologyChange> relevantChanges = new ArrayList<>();

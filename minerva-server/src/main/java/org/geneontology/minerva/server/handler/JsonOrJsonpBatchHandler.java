@@ -48,6 +48,7 @@ public class JsonOrJsonpBatchHandler extends OperationsImpl implements M3BatchHa
 			ExternalLookupService externalLookupService) {
 		super(models, importantRelations, externalLookupService, defaultModelState);
 		this.inferenceProviderCreator = inferenceProviderCreator;
+		System.out.println("JsonOrJsonpBatchHandler instanciated with " + models);
 	}
 
 	private final Type requestType = new TypeToken<M3Request[]>(){
@@ -100,6 +101,10 @@ public class JsonOrJsonpBatchHandler extends OperationsImpl implements M3BatchHa
 	
 	@Override
 	public M3BatchResponse m3Batch(String uid, Set<String> providerGroups, String intention, String packetId, M3Request[] requests, boolean useReasoner, boolean isPrivileged) {
+		System.out.println("JsonOrJsonpBatchHandler:m3Batch(" + uid + ", " + providerGroups + ", " + intention + ", " + packetId + ", " + requests + ", " + useReasoner + ", " + isPrivileged);
+		for(M3Request req : requests) {
+			System.out.println("JsonOrJsonpBatchHandler:m3Batch: " + req);
+		}
 		M3BatchResponse response = new M3BatchResponse(uid, providerGroups, intention, checkPacketId(packetId));
 		if (requests == null) {
 			return error(response, "The batch contains no requests: null value for request array", null);
@@ -117,6 +122,7 @@ public class JsonOrJsonpBatchHandler extends OperationsImpl implements M3BatchHa
 	}
 	
 	private M3BatchResponse m3Batch(String uid, Set<String> providerGroups, String intention, String packetId, String requestString, String useReasonerString, boolean isPrivileged) {
+		System.out.println("JsonOrJsonpBatchHandler:m3Batch(" + uid + ", " + providerGroups + ", " + intention + ", " + packetId + ", " + requestString + ", " + useReasonerString + ", " + isPrivileged);
 		boolean useReasoner = false;
 		if (inferenceProviderCreator != null) {
 			useReasonerString = StringUtils.trimToNull(useReasonerString);

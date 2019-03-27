@@ -98,6 +98,7 @@ public class StartUpTool {
 		Opts opts = new Opts(args);
 		MinervaStartUpConfig conf = new MinervaStartUpConfig();
 		
+		System.out.println("********** MODIFIED MINERVA VERSION ************");
 		
 		while (opts.hasArgs()) {
 			if (opts.nextEq("-g|--graph")) {

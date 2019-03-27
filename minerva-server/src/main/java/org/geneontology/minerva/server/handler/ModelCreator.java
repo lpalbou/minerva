@@ -70,12 +70,15 @@ abstract class ModelCreator {
 	}
 
 	ModelContainer createModel(String userId, Set<String> providerGroups, UndoMetadata token, VariableResolver resolver, JsonAnnotation[] annotationValues) throws UnknownIdentifierException, OWLOntologyCreationException {
+		System.out.println("ModelCreator::createModel(" + userId + ", " + providerGroups + ", " + token + ", " + resolver + ", " + annotationValues + ")");
+
 		ModelContainer model = m3.generateBlankModel(token);
 		Set<OWLAnnotation> annotations = extract(annotationValues, userId, providerGroups, resolver, model);
 		annotations = addDefaultModelState(annotations, model.getOWLDataFactory());
 		if (annotations != null) {
 			m3.addModelAnnotations(model, annotations, token);
 		}
+		System.out.println("ModelCreator::createModel : will call updateModelAnnotations");
 		updateModelAnnotations(model, userId, providerGroups, token, m3);
 		// Disallow undo of initial annotations
 		m3.clearUndoHistory(model.getModelId());
@@ -172,17 +175,22 @@ abstract class ModelCreator {
 	}
 	
 	void updateModelAnnotations(ModelContainer model, String userId, Set<String> providerGroups, UndoMetadata token, MolecularModelManager<UndoMetadata> m3) throws UnknownIdentifierException {
+		System.out.println("ModelCreator::updateModelAnnotations(" + model + ", " + userId + ", " + providerGroups + ", " + token + ", " + m3 + ")");
+
 		final OWLDataFactory f = model.getOWLDataFactory();
 		if (userId != null) {
 			Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
+			System.out.println("ModelCreator::updateModelAnnotations : will add contributor " + userId);
 			annotations.add(create(f, AnnotationShorthand.contributor, userId));
 			m3.addModelAnnotations(model, annotations, token);
 		}
 		for (String provider : providerGroups) {
 			Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
+			System.out.println("ModelCreator::updateModelAnnotations : will add providedBy " + provider);
 			annotations.add(create(f, AnnotationShorthand.providedBy, provider));
 			m3.addModelAnnotations(model, annotations, token);
 		}
+		System.out.println("ModelCreator::updateModelAnnotations : will update the date to " + createDateAnnotation(f));
 		m3.updateAnnotation(model, createDateAnnotation(f), token);
 	}
 	

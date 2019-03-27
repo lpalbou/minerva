@@ -226,12 +226,19 @@ public class ModelSeeding<METADATA> {
 	}
 	
 	private Set<OWLAnnotation> generateAnnotationAndEvidence(final List<GeneAnnotation> source, ModelContainer model, MolecularModelManager<METADATA> manager, final METADATA metadata) {
+		System.out.println("ModelSeeding::generateAnnotationAndEvidence(" + source + ", " + model + ", " + manager + ", " + metadata + ")");
+
 		final OWLDataFactory f = model.getOWLDataFactory();
 		final OWLAnnotationProperty evidenceProperty = f.getOWLAnnotationProperty(AnnotationShorthand.evidence.getAnnotationProperty());
 		final OWLAnnotationProperty sourceProperty = f.getOWLAnnotationProperty(AnnotationShorthand.source.getAnnotationProperty());
 		final OWLAnnotationProperty withProperty = f.getOWLAnnotationProperty(AnnotationShorthand.with.getAnnotationProperty());
 		final OWLAnnotationProperty contributorProperty = f.getOWLAnnotationProperty(AnnotationShorthand.contributor.getAnnotationProperty());
 		Set<OWLAnnotation> annotations = new HashSet<OWLAnnotation>();
+
+		System.out.println("  => source : " + sourceProperty);
+		System.out.println("  => with : " + withProperty);
+		System.out.println("  => evidence : " + evidenceProperty);
+		System.out.println("  => contributor : " + contributorProperty);
 		
 		if (source != null) {
 			for (GeneAnnotation annotation : source) {
@@ -253,6 +260,7 @@ public class ModelSeeding<METADATA> {
 						}
 					}
 					if (annotation.getAssignedBy() != null) {
+						System.out.println("ModelSeeding::generateAnnotationAndEvidence : adding contributor with " + annotation.getAssignedBy());
 						evidenceAnnotations.add(f.getOWLAnnotation(contributorProperty, f.getOWLLiteral(annotation.getAssignedBy())));
 					}
 					evidenceAnnotations.add(f.getOWLAnnotation(f.getRDFSComment(), f.getOWLLiteral("Generated from: "+annotation.toString())));
